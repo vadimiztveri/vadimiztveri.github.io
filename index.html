@@ -13,55 +13,58 @@
   </head>
   <body>
     <h1>Определение пола по имени, фамилии и отчеству</h1>
-    <forms>
-      <table>
-        <tr>
-          <td><label for="surname">Фамилия:</labal></td>
-          <td><input id="surname" type="text" onBlur="sexing()" /></td>
-        </tr>
+    <form>
+      <p>
+        <label for="surname">Фамилия:</label><br/>
+        <input id="surname" type="text" onBlur="sexing()" />
+      </p>
 
-        <tr>
-          <td><label for="first_name">Имя:</labal></td>
-          <td><input id="first_name" type="text" onBlur="sexing()" /></td>
-        </tr>
+      <p>
+        <label for="first_name">Имя:</label><br/>
+        <input id="first_name" type="text" onBlur="sexing()" />
+      </p>
 
-        <tr>
-          <td><label for="patronymic">Отчество:</labal></td>
-          <td><input id="patronymic" type="text" onBlur="sexing()" /></td>
-        </tr>
+      <p>
+        <label for="patronymic">Отчество:</label><br/>
+        <input id="patronymic" type="text" onBlur="sexing()" />
+      </p>
 
+      <p>
+        <label for="result">Пол:</label><br/>
+        <input id="male" name="sex" type="radio" onclick="manual_sex_choice()" /> мужской
+        <input id="female" name="sex" type="radio" onclick="manual_sex_choice()" /> женский
+      <p>
+    </form>
 
-        <tr>
-          <td><label for="result">Пол:</labal></td>
-          <td><input id="result" type="text" /></td>
-          <td></td>
-        </tr>
-      </table>
-    </forms>
-
-    <script src="Sex.js"></script>
+    <script src="sex_by_russian_name.js"></script>
 
     <script>
+      var is_manual_sex_choice = false;
+
+      var manual_sex_choice = function() {
+        is_manual_sex_choice = true;
+      }
+
       var sexing = function () {
-        var surname = document.getElementById('surname').value,
-            first_name = document.getElementById('first_name').value,
-            patronymic = document.getElementById('patronymic').value,
+        if (!is_manual_sex_choice) {
+          var surname = document.getElementById('surname').value,
+              first_name = document.getElementById('first_name').value,
+              patronymic = document.getElementById('patronymic').value,
+              sex_by_russian_name = new SexByRussianName(surname, first_name, patronymic),
+              gender = sex_by_russian_name.get_gender();
 
-            sex = new Sex(surname, first_name, patronymic),
-            gender = sex.get_gender();
-
-        switch(gender){
-          case 0:
-            var subject = "женский";
-            break;
-          case 1:
-            var subject = "мужской";
-            break;
-          default:
-            var subject = "не определен";
+          switch(gender){
+            case 0:
+              document.getElementById('female').checked = true;
+              break;
+            case 1:
+              document.getElementById('male').checked = true;
+              break;
+            default:
+              document.getElementById('male').checked = false;
+              document.getElementById('female').checked = false;
+          }
         }
-
-        document.getElementById('result').value = subject;
       }
 
     </script>
